@@ -3,7 +3,7 @@ const app = express();
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://keskpank:keskpank@localhost/keskpank?authSource=keskpank&w=1', {
+mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }, function () {
