@@ -1,0 +1,91 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Keskpank",
+    "version": "1.0.0",
+    "description": "Keskpank"
+  },
+  "paths": {
+    "/banks": {
+      "post": {
+        "tags": [
+          "banks"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/postBanksRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Registers a new bank",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/postBanksResponse"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "1"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "postBanksResponse": {
+        "title": "Root Type for postBanksResponse",
+        "description": "",
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "transactionUrl": {
+            "type": "string"
+          },
+          "apiKey": {
+            "type": "string"
+          },
+          "__v": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "example": {
+          "_id": "5f60dec34b7a442a58703d21",
+          "name": "barBank",
+          "transactionUrl": "foo",
+          "apiKey": "0367620d-abad-47e1-876c-b25a926ea566",
+          "__v": 0
+        }
+      },
+      "postBanksRequest": {
+        "title": "Root Type for postBankRequest",
+        "description": "",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "transactionUrl": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "name": "barBank",
+          "transactionUrl": "foo"
+        }
+      }
+    }
+  }
+}
