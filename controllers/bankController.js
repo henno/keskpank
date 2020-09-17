@@ -51,7 +51,20 @@ async function register(req, res) {
     }
 
 }
+async function transfer (req, res){
+    const {amount, accountFrom, accountTo} = req.body
+    const bankPrefix = accountTo.substring(0,3)
+    const bank = await BankModel.findOne({bankPrefix})
+    // if (!bank){
+    //     res.status(400).json({
+    //         error:"destination bank not found"
+    //     });
+    //}
+    console.log(req.body)
+}
 
 module.exports = {
-    register
+    register,
+    transfer
 }
+

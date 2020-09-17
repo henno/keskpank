@@ -8,5 +8,9 @@ router.post('/banks', [
     check('transactionUrl').isURL().withMessage('transactionUrl is invalid'),
     check('owners').not().isEmpty().withMessage('owners is invalid'),
 ], bankController.register);
-
+router.post('/transfer', [
+    check('amount').not().isEmpty().withMessage('amount is required'),
+    check('accountFrom').isString().withMessage('accountFrom is invalid'),
+    check('accountTo').not().isEmpty().withMessage('accountTo is invalid'),
+], bankController.transfer);
 module.exports = router;
