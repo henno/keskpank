@@ -12,4 +12,15 @@ module.exports = mongoose.model('Bank', new mongoose.Schema({
         type: String,
         required: true
     },
+    bankPrefix: {
+        type: String,
+        required: true,
+        minlength: 3,
+        maxlength: 3
+    },
+    owners: {
+        type: String,
+        required: true,
+        minlength: 1
+    }
 }));

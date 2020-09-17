@@ -1,19 +1,41 @@
 const BankModel = require("../models/bankModel");
 
+/**
+ * Function to produce a random string in specified format.
+ * @param format String Format of the string
+ * See: http://stackoverflow.com/a/8809472
+ */
+function randomString(format) {
+    var d = new Date().getTime();
+
+    if (typeof window !== 'undefined' && window.performance && typeof window.performance.now === "function") {
+        d += performance.now();
+    }
+
+    return format.replace(/[xy]/g, function (c) {
+        var r = (d + Math.random() * 16) % 16 | 0;
+        d = Math.floor(d / 16);
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+}
+
 async function register(req, res) {
 
+    console.log('POST /register');
+
     // Parse request body
-    const {name, transactionUrl} = req.body
+    const {name, transactionUrl, owners} = req.body
 
     // Generate api key for the bank
-    let apiKey = generateUUID()
+    let apiKey = randomString('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx')
+    let bankPrefix = randomString('xxx')
 
     // Attempt to save bank to the DB
     try {
 
         // Create bank in DB
         const bank = await BankModel.create({
-            name, transactionUrl, apiKey
+            name, transactionUrl, apiKey, bankPrefix, owners
         });
 
         // Return bank object to client
@@ -29,25 +51,6 @@ async function register(req, res) {
     }
 
 }
-
-/**
- * Function to produce UUID.
- * See: http://stackoverflow.com/a/8809472
- */
-function generateUUID() {
-    var d = new Date().getTime();
-
-    if (typeof window !== 'undefined' && window.performance && typeof window.performance.now === "function") {
-        d += performance.now();
-    }
-
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = (d + Math.random() * 16) % 16 | 0;
-        d = Math.floor(d / 16);
-        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    });
-}
-
 
 module.exports = {
     register
