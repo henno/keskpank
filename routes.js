@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bankController = require('./controllers/bankController');
 const { check } = require('express-validator');
+const {validateApiKey} = require("./middlewares");
 
 router.post('/banks', [
     check('name').not().isEmpty().withMessage('name is invalid'),
@@ -10,6 +11,8 @@ router.post('/banks', [
 ], bankController.register);
 
 
-router.get('/banks', bankController.get);
+
+
+router.get('/banks', validateApiKey, bankController.get);
 
 module.exports = router;

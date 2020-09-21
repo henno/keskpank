@@ -1,3 +1,4 @@
+const BankModel = require("./models/bankModel");
 exports.RequestBodyIsValidJson = (err, req, res, next) => {
     // body-parser will set this to 400 if the json is in error
     if (err.status === 400)
@@ -18,4 +19,27 @@ exports.enableCORS = (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
+}
+
+exports.validateApiKey = async (req, res, next) => {
+    let clientApiKey = req.get('api-key');
+    if (!clientApiKey) {
+        return res.status(400).send({
+            error: "Missing API key"
+        });
+    }
+    try {
+        let clientDetails = await BankModel.findOne({"apiKey": clientApiKey});
+        if (clientDetails) {
+            next();
+        } else {
+            return res.status(400).send({
+                error: "Invalid API key"
+            })
+        }
+    } catch (e) {
+        return res.status(500).send({
+            error: JSON.stringify(e, null, 2)
+        })
+    }
 }

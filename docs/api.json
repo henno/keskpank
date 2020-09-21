@@ -32,21 +32,30 @@
             },
             "description": "Successful request"
           },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorMissingApiKey"
+                }
+              }
+            },
+            "description": "Missing API key"
+          },
           "401": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error401"
+                  "$ref": "#/components/schemas/error401InvalidApiKey"
                 }
               }
             },
-            "description": "Unauthorized"
+            "description": "Ivalid API key"
           }
         },
         "summary": "Returns a list of registered banks"
       },
       "post": {
-        "summary": "Register a new bank",
         "requestBody": {
           "content": {
             "application/json": {
@@ -82,7 +91,8 @@
             "description": "Bad request"
           }
         },
-        "operationId": "1"
+        "operationId": "1",
+        "summary": "Register a new bank"
       }
     }
   },
@@ -203,6 +213,32 @@
         },
         "example": {
           "error": "unauthenticated"
+        }
+      },
+      "errorMissingApiKey": {
+        "title": "Root Type for errorMissingApiKey",
+        "description": "Missing api-key header",
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "error": "Missing API key"
+        }
+      },
+      "error401InvalidApiKey": {
+        "title": "Root Type for error401InvalidApiKey",
+        "description": "Invalid API key",
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "error": "Invalid API key"
         }
       }
     }

@@ -54,22 +54,25 @@ async function register(req, res) {
 
 async function get(req, res) {
 
+    // Generate api key for the bank
+
     // Attempt to save bank to the DB
     try {
 
-        // Get all banks
-        const banks = await BankModel.find({
-        }).select({ 'name': 1, 'transactionUrl': 1, 'bankPrefix': 1, 'owners': 1, '_id': 0 })
+        // Create bank in DB
+        //get all banks
+        const bank = await BankModel.find({
+        }).select({"name": 1, "transactionUrl": 1, "bankPrefix": 1, "owners": 1, "_id": 0 });;
 
         // Return bank object to client
-        res.send(JSON.stringify(banks, null, 2));
+        res.send(JSON.stringify(bank, null, 2));
 
 
     } catch (e) {
 
         // Handle any errors
         res.statusCode = 500
-        res.json({ error: e.message });
+        res.json({error: e.message});
 
     }
 

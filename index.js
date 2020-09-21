@@ -27,6 +27,7 @@ db.once('open', function () {
 const app = express();
 
 // Run middlewares
+
 app.use(enableCORS);
 app.use(RequestHeadersHaveCorrectContentType);
 app.use(express.json()); // Parse request body if's JSON
