@@ -12,5 +12,4 @@ router.post('/banks', [
 
 router.get('/banks', bankController.get);
 
-
 module.exports = router;

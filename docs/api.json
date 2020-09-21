@@ -17,7 +17,36 @@
   ],
   "paths": {
     "/banks": {
+      "get": {
+        "tags": [
+          "banks"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getBanksResponse"
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error401"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Returns a list of registered banks"
+      },
       "post": {
+        "summary": "Register a new bank",
         "requestBody": {
           "content": {
             "application/json": {
@@ -43,14 +72,14 @@
             "description": "Bank successfully registered"
           },
           "400": {
-            "description": "Bad request",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/errorResponse"
                 }
               }
-            }
+            },
+            "description": "Bad request"
           }
         },
         "operationId": "1"
@@ -131,6 +160,49 @@
         },
         "example": {
           "error": "Error description here"
+        }
+      },
+      "getBanksResponse": {
+        "title": "Root Type for getBanksResponse",
+        "description": "",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "transactionUrl": {
+              "type": "string"
+            },
+            "bankPrefix": {
+              "type": "string"
+            },
+            "owners": {
+              "type": "string"
+            }
+          }
+        },
+        "example": [
+          {
+            "name": "barBank",
+            "transactionUrl": "http://examplebank.com/",
+            "bankPrefix": "199",
+            "owners": "henno"
+          }
+        ]
+      },
+      "error401": {
+        "title": "Root Type for error401",
+        "description": "",
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "error": "unauthenticated"
         }
       }
     }

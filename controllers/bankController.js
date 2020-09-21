@@ -59,7 +59,7 @@ async function get(req, res) {
 
         // Get all banks
         const banks = await BankModel.find({
-        }).select({ 'name': 1, 'transactionUrl': 1, 'bankPrefix': 1, 'owners': 1, '_id': 0 });;
+        }).select({ 'name': 1, 'transactionUrl': 1, 'bankPrefix': 1, 'owners': 1, '_id': 0 })
 
         // Return bank object to client
         res.send(JSON.stringify(banks, null, 2));
