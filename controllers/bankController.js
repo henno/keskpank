@@ -52,6 +52,39 @@ async function register(req, res) {
 
 }
 
+async function get(req, res) {
+
+    console.log('GET /banks');
+
+    // Generate api key for the bank
+    let apiKey = randomString('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx')
+    let bankPrefix = randomString('xxx')
+
+    // Attempt to save bank to the DB
+    try {
+
+        // Create bank in DB
+        const bank = await BankModel.create({
+            name, transactionUrl, apiKey, bankPrefix, owners
+        });
+
+        // Return bank object to client
+        res.send(JSON.stringify(bank, null, 2));
+
+
+    } catch (e) {
+
+        // Handle any errors
+        res.statusCode = 400
+        res.json({error: e.message});
+
+    }
+
+}
+
+
+
 module.exports = {
-    register
+    register,
+    get
 }

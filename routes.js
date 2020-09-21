@@ -9,4 +9,8 @@ router.post('/banks', [
     check('owners').not().isEmpty().withMessage('owners is invalid'),
 ], bankController.register);
 
+
+router.get('/banks', bankController.get);
+
+
 module.exports = router;
