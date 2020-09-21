@@ -17,6 +17,49 @@
   ],
   "paths": {
     "/banks": {
+      "get": {
+        "tags": [
+          "banks"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getBanksResponse"
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorMissingApiKey"
+                }
+              }
+            },
+            "description": "Missing API key"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error401InvalidApiKey"
+                }
+              }
+            },
+            "description": "Ivalid API key"
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Returns a list of registered banks"
+      },
       "post": {
         "requestBody": {
           "content": {
@@ -43,17 +86,18 @@
             "description": "Bank successfully registered"
           },
           "400": {
-            "description": "Bad request",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/errorResponse"
                 }
               }
-            }
+            },
+            "description": "Bad request"
           }
         },
-        "operationId": "1"
+        "operationId": "1",
+        "summary": "Register a new bank"
       }
     }
   },
@@ -132,6 +176,83 @@
         "example": {
           "error": "Error description here"
         }
+      },
+      "getBanksResponse": {
+        "title": "Root Type for getBanksResponse",
+        "description": "",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "transactionUrl": {
+              "type": "string"
+            },
+            "bankPrefix": {
+              "type": "string"
+            },
+            "owners": {
+              "type": "string"
+            }
+          }
+        },
+        "example": [
+          {
+            "name": "barBank",
+            "transactionUrl": "http://examplebank.com/",
+            "bankPrefix": "199",
+            "owners": "henno"
+          }
+        ]
+      },
+      "error401": {
+        "title": "Root Type for error401",
+        "description": "",
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "error": "unauthenticated"
+        }
+      },
+      "errorMissingApiKey": {
+        "title": "Root Type for errorMissingApiKey",
+        "description": "Missing api-key header",
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "error": "Missing API key"
+        }
+      },
+      "error401InvalidApiKey": {
+        "title": "Root Type for error401InvalidApiKey",
+        "description": "Invalid API key",
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "error": "Invalid API key"
+        }
+      }
+    },
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "description": "Api key to authorize requests",
+        "name": "Api-Key",
+        "in": "header"
       }
     }
   }
