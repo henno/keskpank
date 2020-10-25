@@ -31,7 +31,6 @@ app.use(enableCORS);
 app.use(RequestHeadersHaveCorrectContentType);
 app.use(express.json()); // Parse request body if's JSON
 app.use(RequestBodyIsValidJson)
-app.use(express.urlencoded({extended: true})); // Parse request body if's key=and&value=pairs
 app.use('/', routes) // Load routes
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

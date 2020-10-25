@@ -24,7 +24,7 @@ async function register(req, res) {
     console.log('POST /register');
 
     // Parse request body
-    const { name, transactionUrl, owners } = req.body
+    const { name, transactionUrl, jwksUrl, owners } = req.body
 
     // Generate api key for the bank
     let apiKey = randomString('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx')
@@ -35,7 +35,7 @@ async function register(req, res) {
 
         // Create bank in DB
         const bank = await BankModel.create({
-            name, transactionUrl, apiKey, bankPrefix, owners
+            name, transactionUrl, apiKey, bankPrefix, owners, jwksUrl
         });
 
         // Return bank object to client
@@ -57,7 +57,7 @@ async function getAll(req, res) {
 
         // Get all banks
         const banks = await BankModel.find({
-        }).select({"name": 1, "transactionUrl": 1, "bankPrefix": 1, "owners": 1, "_id": 0 });;
+        }).select({"name": 1, "transactionUrl": 1, "bankPrefix": 1, "owners": 1, "_id": 0, "jwksUrl": 1 });;
 
         // Return bank object to client
         res.send(JSON.stringify(banks, null, 2));

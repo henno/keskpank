@@ -5,21 +5,22 @@
     "version": "1.0.0",
     "description": "Keskpank"
   },
-  "servers": [
-    {
-      "url": "http://localhost:3000/",
-      "description": "Local dev server"
-    },
-    {
-      "url": "https://keskpank.diarainfra.com/",
-      "description": ""
-    }
-  ],
   "paths": {
     "/banks": {
       "get": {
         "tags": [
           "banks"
+        ],
+        "parameters": [
+          {
+            "name": "Api-Key",
+            "description": "Central Bank issued API key.",
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "required": true
+          }
         ],
         "responses": {
           "200": {
@@ -36,21 +37,23 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/errorMissingApiKey"
+                  "$ref": "#/components/schemas/errorResponse"
+                },
+                "examples": {
+                  "Missing API key": {
+                    "value": {
+                      "error": "Missing API key"
+                    }
+                  },
+                  "Invalid API key": {
+                    "value": {
+                      "error": "Invalid API key"
+                    }
+                  }
                 }
               }
             },
-            "description": "Missing API key"
-          },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/error401InvalidApiKey"
-                }
-              }
-            },
-            "description": "Ivalid API key"
+            "description": "Bad request"
           }
         },
         "security": [
@@ -58,10 +61,12 @@
             "apiKey": []
           }
         ],
-        "summary": "Returns a list of registered banks"
+        "summary": "Returns a list of all banks",
+        "description": "Returns a list of all banks"
       },
       "post": {
         "requestBody": {
+          "description": "All the fields in the example are required. Look at the schema for detailed description of the fields.",
           "content": {
             "application/json": {
               "schema": {
@@ -83,7 +88,7 @@
                 }
               }
             },
-            "description": "Bank successfully registered"
+            "description": "Bank has been registered."
           },
           "400": {
             "content": {
@@ -93,164 +98,172 @@
                 }
               }
             },
-            "description": "Bad request"
+            "description": "Invalid request body."
           }
         },
-        "operationId": "1",
-        "summary": "Register a new bank"
+        "summary": "Registers a new bank."
       }
     }
   },
   "components": {
     "schemas": {
       "postBanksResponse": {
-        "title": "Response body when making POST /banks request",
+        "title": "POST /banks response",
         "description": "",
+        "required": [
+          "name",
+          "apiKey",
+          "transactionUrl",
+          "bankPrefix",
+          "owners",
+          "jwksUrl"
+        ],
         "type": "object",
         "properties": {
-          "_id": {
-            "description": "A unique ID identifying the bank",
-            "type": "string"
-          },
-          "name": {
-            "description": "Bank's name",
-            "type": "string"
-          },
-          "transactionUrl": {
-            "description": "A URL where the central bank will make a request when another bank wants to make a transfer of funds",
-            "type": "string"
-          },
           "apiKey": {
-            "description": "Bank's API key which must be sent with every request to central bank",
-            "type": "string"
-          },
-          "bankPrefix": {
-            "description": "Prefix for the accounts that the bank will generate. This enables the central bank to detect the destination bank from the accountTo field.",
-            "type": "string"
-          }
-        },
-        "example": {
-          "_id": "5f60dec34b7a442a58703d21",
-          "name": "barBank",
-          "transactionUrl": "foo",
-          "apiKey": "0367620d-abad-47e1-876c-b25a926ea566",
-          "bankPrefix": "5b8",
-          "owners": "John Smith and Jane Doe"
-        }
-      },
-      "postBanksRequest": {
-        "title": "Request body for making POST /banks request",
-        "description": "",
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "Bank's name",
-            "type": "string"
+            "description": "Bank's API key which is required to be sent to central bank in Api-Key HTTP header for every request.",
+            "type": "string",
+            "example": "d1786ddc-66ad-4453-b7d8-6be176b379fa"
           },
           "transactionUrl": {
-            "description": "A URL where the central bank will make a request when another bank wants to make a transfer of funds",
-            "type": "string"
+            "description": "The address where a remote bank should send requests for initiating transactions.",
+            "type": "string",
+            "example": "http://foobank.com/transactions/b2b"
           },
           "bankPrefix": {
-            "description": "Prefix for the accounts that the bank will generate. This enables the central bank to detect the destination bank from the accountTo field.",
-            "type": "string"
+            "description": "Bank's bankPrefix is a three character string at the beginning of every account of given bank which is used to determine to which bank the account belongs to.",
+            "type": "string",
+            "example": "abc"
+          },
+          "owners": {
+            "description": "Bank's founders.",
+            "type": "string",
+            "example": "Foo and Bar"
+          },
+          "jwksUrl": {
+            "description": "Bank's jwksUrl",
+            "type": "string",
+            "example": "http://foobank.com/jwks.json"
+          },
+          "name": {
+            "description": "The name of the bank.",
+            "type": "string",
+            "example": "fooBar"
           }
-        },
-        "example": {
-          "name": "barBank",
-          "transactionUrl": "http://examplebank.com/",
-          "bankPrefix": "5b8",
-          "owners": "John Smith and Jane Doe"
         }
       },
       "errorResponse": {
-        "title": "Generic error response",
-        "description": "Response body for all errors",
+        "title": "a generic error response",
+        "description": "Generic error response",
         "type": "object",
         "properties": {
           "error": {
-            "description": "Description of the error",
             "type": "string"
           }
         },
         "example": {
-          "error": "Error description here"
+          "error": "Error message"
+        }
+      },
+      "postBanksRequest": {
+        "title": "POST /banks request",
+        "required": [
+          "name",
+          "owners",
+          "jwksUrl",
+          "transactionUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Bank's name",
+            "type": "string",
+            "example": "fooBank"
+          },
+          "owners": {
+            "description": "Bank's owners",
+            "type": "string",
+            "example": "Foo and Bar"
+          },
+          "jwksUrl": {
+            "description": "Link to a JWKS (JSON Web Key Set) file which contains the bank's public keys for the purpose of validating the signatures in the JWT (JSON Web Tokens).",
+            "type": "string",
+            "example": "http://foobank.com/jwks.json"
+          },
+          "transactionUrl": {
+            "description": "The address where a remote bank should send requests for initiating transactions.",
+            "type": "string",
+            "example": "http://foobank.com/transactions/b2b"
+          }
         }
       },
       "getBanksResponse": {
-        "title": "Root Type for getBanksResponse",
+        "title": "GET /banks response",
         "description": "",
         "type": "array",
         "items": {
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string"
-            },
-            "transactionUrl": {
-              "type": "string"
-            },
-            "bankPrefix": {
-              "type": "string"
-            },
-            "owners": {
-              "type": "string"
-            }
-          }
+          "$ref": "#/components/schemas/bank"
         },
         "example": [
           {
-            "name": "barBank",
-            "transactionUrl": "http://examplebank.com/",
-            "bankPrefix": "199",
-            "owners": "henno"
+            "name": "Bank A",
+            "owners": "John Doe",
+            "jwksUrl": "https://banka.com/jwks",
+            "transactionUrl": "https://banka.com/transactions/b2b",
+            "bankPrefix": "aaa"
+          },
+          {
+            "name": "Bank B",
+            "owners": "Jane Doe",
+            "jwksUrl": "https://bankb.com/jwks",
+            "transactionUrl": "https://bankb.com/transactions/b2b",
+            "bankPrefix": "bbb"
           }
         ]
       },
-      "error401": {
-        "title": "Root Type for error401",
+      "bank": {
         "description": "",
+        "required": [
+          "name",
+          "owners",
+          "jwksUrl",
+          "transactionUrl",
+          "bankPrefix"
+        ],
         "type": "object",
         "properties": {
-          "error": {
+          "name": {
+            "description": "Bank's name",
             "type": "string"
+          },
+          "owners": {
+            "description": "Bank's owners",
+            "type": "string",
+            "example": "Foo and Bar"
+          },
+          "jwksUrl": {
+            "format": "uri,",
+            "description": "Link to a JWKS (JSON Web Key Set) file which contains the bank's public keys for the purpose of validating the signatures in the JWT (JSON Web Tokens).",
+            "type": "string,",
+            "example": "http://foobank.com/jwks.json"
+          },
+          "transactionUrl": {
+            "format": "uri,",
+            "description": "The address where a remote bank should send requests for initiating transactions.",
+            "type": "string,",
+            "example": "http://foobank.com/transactions/b2b"
+          },
+          "bankPrefix": {
+            "description": "Bank's bankPrefix is a three character string at the beginning of every account of given bank which is used to determine to which bank the account belongs to.",
+            "type": "string",
+            "example": "abc"
           }
-        },
-        "example": {
-          "error": "unauthenticated"
-        }
-      },
-      "errorMissingApiKey": {
-        "title": "Root Type for errorMissingApiKey",
-        "description": "Missing api-key header",
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "string"
-          }
-        },
-        "example": {
-          "error": "Missing API key"
-        }
-      },
-      "error401InvalidApiKey": {
-        "title": "Root Type for error401InvalidApiKey",
-        "description": "Invalid API key",
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "string"
-          }
-        },
-        "example": {
-          "error": "Invalid API key"
         }
       }
     },
     "securitySchemes": {
       "apiKey": {
         "type": "apiKey",
-        "description": "Api key to authorize requests",
         "name": "Api-Key",
         "in": "header"
       }

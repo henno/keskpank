@@ -8,7 +8,7 @@ exports.RequestBodyIsValidJson = (err, req, res, next) => {
 
 exports.RequestHeadersHaveCorrectContentType = (req, res, next) => {
     // Catch invalid Content-Types
-    var RE_CONTYPE = /^application\/(?:x-www-form-urlencoded|json)(?:[\s;]|$)/i;
+    var RE_CONTYPE = /^application\/(?:json)(?:[\s;]|$)/i;
     if (req.method !== 'GET' && !RE_CONTYPE.test(req.headers['content-type'])) {
         res.setStatus = 406
         return res.send('Content-Type is not application/json');
