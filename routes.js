@@ -21,6 +21,6 @@ router.post('/banks', [
     validate
 ], bankController.register);
 
-router.get('/banks', validateApiKey, bankController.getAll);
+router.get('/banks', bankController.getAll);
 
 module.exports = router;

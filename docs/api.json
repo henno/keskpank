@@ -15,17 +15,6 @@
         "tags": [
           "banks"
         ],
-        "parameters": [
-          {
-            "name": "Api-Key",
-            "description": "Central Bank issued API key.",
-            "schema": {
-              "type": "string"
-            },
-            "in": "header",
-            "required": true
-          }
-        ],
         "responses": {
           "200": {
             "content": {
@@ -37,36 +26,19 @@
             },
             "description": "Successful request"
           },
-          "400": {
+          "500": {
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/errorResponse"
-                },
-                "examples": {
-                  "Missing API key": {
-                    "value": {
-                      "error": "Missing API key"
-                    }
-                  },
-                  "Invalid API key": {
-                    "value": {
-                      "error": "Invalid API key"
-                    }
-                  }
                 }
               }
             },
-            "description": "Bad request - request was malformed or missing required authentication"
+            "description": "Internal server error"
           }
         },
-        "security": [
-          {
-            "apiKey": []
-          }
-        ],
         "summary": "Get a list of all registered banks",
-        "description": "Returns a comprehensive list of all banks registered with the central bank system, including their names, owners, transaction URLs, and bank prefixes. This endpoint requires a valid API key for authentication."
+        "description": "Returns a comprehensive list of all banks registered with the central bank system, including their names, owners, transaction URLs, and bank prefixes. This endpoint is public and does not require authentication."
       },
       "post": {
         "requestBody": {
