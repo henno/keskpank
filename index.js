@@ -1,7 +1,7 @@
 const express = require("express")
 const dotenv = require('dotenv')
 const routes = require('./routes.js')
-const mongoose = require('mongoose')
+const {initDb} = require('./database')
 const {RequestHeadersHaveCorrectContentType, RequestBodyIsValidJson, enableCORS} = require('./middlewares')
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./docs/api.json');
@@ -10,18 +10,8 @@ const swaggerDocument = require('./docs/api.json');
 // Init configuration from .env file
 dotenv.config();
 
-// Connect DB
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}, function () {
-    console.log('Pending connection to mongodb is now open');
-});
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function () {
-    console.log('Connected to MongoDB');
-});
+// Initialize SQLite database
+initDb();
 
 // Initialize Express
 const app = express();
