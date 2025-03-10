@@ -19,14 +19,13 @@
   },
   "homepage": "https://github.com/henno/keskpank#readme",
   "dependencies": {
-    "bcrypt": "^5.0.0",
+    "bcrypt": "^5.1.1",
     "better-sqlite3": "^9.4.3",
-    "body-parser": "^1.19.0",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "express-validator": "^6.6.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3",
+    "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
-    "nodemon": "^2.0.4",
-    "swagger-ui-express": "^4.1.4"
+    "nodemon": "^3.1.0",
+    "swagger-ui-express": "^5.0.0"
   }
 }

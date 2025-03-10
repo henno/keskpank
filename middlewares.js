@@ -1,7 +1,7 @@
 const BankModel = require("./models/bankModel");
 
 exports.RequestBodyIsValidJson = (err, req, res, next) => {
-    // body-parser will set this to 400 if the json is in error
+    // Express json middleware will set this to 400 if the json is malformed
     if (err.status === 400)
         return res.status(err.status).send('Malformed JSON');
     return next(err); // if it's not a 400, let the default error handling do it.
