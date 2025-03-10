@@ -19,58 +19,45 @@ function randomString(format) {
     });
 }
 
-async function register(req, res) {
-
-    console.log('POST /register');
+function register(req, res) {
+    console.log('POST /banks');
 
     // Parse request body
-    const { name, transactionUrl, jwksUrl, owners } = req.body
+    const { name, transactionUrl, jwksUrl, owners } = req.body;
 
     // Generate api key for the bank
-    let apiKey = randomString('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx')
-    let bankPrefix = randomString('xxx')
+    let apiKey = randomString('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx');
+    let bankPrefix = randomString('xxx');
 
     // Attempt to save bank to the DB
     try {
-
         // Create bank in DB
-        const bank = await BankModel.create({
+        const bank = BankModel.create({
             name, transactionUrl, apiKey, bankPrefix, owners, jwksUrl
         });
 
         // Return bank object to client
         res.send(JSON.stringify(bank, null, 2));
-
-
     } catch (e) {
-
         // Handle any errors
-        res.statusCode = 400
+        res.statusCode = 400;
         res.json({ error: e.message });
-
     }
-
 }
 
-async function getAll(req, res) {
+function getAll(req, res) {
     try {
+        // Get all banks with selected fields
+        const fields = ['name', 'transactionUrl', 'bankPrefix', 'owners', 'jwksUrl'];
+        const banks = BankModel.find(fields);
 
-        // Get all banks
-        const banks = await BankModel.find({
-        }).select({"name": 1, "transactionUrl": 1, "bankPrefix": 1, "owners": 1, "_id": 0, "jwksUrl": 1 });;
-
-        // Return bank object to client
+        // Return banks to client
         res.send(JSON.stringify(banks, null, 2));
-
-
     } catch (e) {
-
         // Handle any errors
-        res.statusCode = 500
-        res.json({error: e.message});
-
+        res.statusCode = 500;
+        res.json({ error: e.message });
     }
-
 }
 
 
