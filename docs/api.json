@@ -1,9 +1,13 @@
 {
   "openapi": "3.0.2",
   "info": {
-    "title": "Keskpank",
+    "title": "Keskpank API",
     "version": "1.0.0",
-    "description": "Keskpank"
+    "description": "Central Bank API system that manages bank registrations and inter-bank communications. This API enables financial institutions to register with the central bank and retrieve information about other registered banks.",
+    "contact": {
+      "name": "Support",
+      "email": "support@keskpank.com"
+    }
   },
   "paths": {
     "/banks": {
@@ -53,7 +57,7 @@
                 }
               }
             },
-            "description": "Bad request"
+            "description": "Bad request - request was malformed or missing required authentication"
           }
         },
         "security": [
@@ -61,12 +65,12 @@
             "apiKey": []
           }
         ],
-        "summary": "Returns a list of all banks",
-        "description": "Returns a list of all banks"
+        "summary": "Get a list of all registered banks",
+        "description": "Returns a comprehensive list of all banks registered with the central bank system, including their names, owners, transaction URLs, and bank prefixes. This endpoint requires a valid API key for authentication."
       },
       "post": {
         "requestBody": {
-          "description": "All the fields in the example are required. Look at the schema for detailed description of the fields.",
+          "description": "Registration information for a new bank. All fields (name, owners, jwksUrl, and transactionUrl) are required. Each field has specific format requirements detailed in the schema.",
           "content": {
             "application/json": {
               "schema": {
@@ -98,10 +102,11 @@
                 }
               }
             },
-            "description": "Invalid request body."
+            "description": "Invalid request body - missing required fields or invalid data formats."
           }
         },
-        "summary": "Registers a new bank."
+        "summary": "Register a new bank with the central bank system",
+        "description": "Allows a new financial institution to register with the central bank system. Upon successful registration, the bank will receive a unique API key and bank prefix that will be used for all future interactions with the system."
       }
     }
   },
@@ -141,8 +146,9 @@
             "example": "Foo and Bar"
           },
           "jwksUrl": {
-            "description": "Bank's jwksUrl",
+            "description": "URL to the JSON Web Key Set (JWKS) that contains the bank's public keys. These keys are used to validate the signatures in JSON Web Tokens (JWT) during secure communications between banks.",
             "type": "string",
+            "format": "uri",
             "example": "http://foobank.com/jwks.json"
           },
           "name": {
@@ -153,8 +159,8 @@
         }
       },
       "errorResponse": {
-        "title": "a generic error response",
-        "description": "Generic error response",
+        "title": "Error Response",
+        "description": "Standard error response format used throughout the API",
         "type": "object",
         "properties": {
           "error": {
@@ -242,15 +248,15 @@
             "example": "Foo and Bar"
           },
           "jwksUrl": {
-            "format": "uri,",
-            "description": "Link to a JWKS (JSON Web Key Set) file which contains the bank's public keys for the purpose of validating the signatures in the JWT (JSON Web Tokens).",
-            "type": "string,",
+            "format": "uri",
+            "description": "URL to the JSON Web Key Set (JWKS) that contains the bank's public keys. These keys are used to validate the signatures in JSON Web Tokens (JWT) during secure communications between banks.",
+            "type": "string",
             "example": "http://foobank.com/jwks.json"
           },
           "transactionUrl": {
-            "format": "uri,",
-            "description": "The address where a remote bank should send requests for initiating transactions.",
-            "type": "string,",
+            "format": "uri",
+            "description": "The bank's API endpoint where other banks should send requests for initiating inter-bank transactions. This URL is used for bank-to-bank (B2B) communication.",
+            "type": "string",
             "example": "http://foobank.com/transactions/b2b"
           },
           "bankPrefix": {
