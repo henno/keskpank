@@ -9,6 +9,12 @@
       "email": "support@keskpank.com"
     }
   },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Default server"
+    }
+  ],
   "paths": {
     "/banks": {
       "get": {
