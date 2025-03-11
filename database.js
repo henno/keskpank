@@ -64,11 +64,17 @@ const insert = (tableName, data) => {
     return { id: info.lastInsertRowid, ...data };
 };
 
+const deleteById = (tableName, id) => {
+    const stmt = db.prepare(`DELETE FROM ${tableName} WHERE id = ?`);
+    return stmt.run(id);
+};
+
 module.exports = {
     db,
     initDb,
     getById,
     getBy,
     getAll,
-    insert
+    insert,
+    deleteById
 };

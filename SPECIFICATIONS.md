@@ -17,7 +17,7 @@ All banks must register with the Central Bank to participate in the interbank ne
    - Transaction URL endpoint (for receiving transactions)
    - JWKS URL endpoint (for public key sharing)
    - Owner information
-
+]
 ## Account Number Format
 
 - Account numbers must start with the bank's prefix
