@@ -25,12 +25,18 @@ function register(req, res) {
     // Parse request body
     const { name, transactionUrl, jwksUrl, owners } = req.body;
 
-    // Generate api key for the bank
-    let apiKey = randomString('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx');
-    let bankPrefix = randomString('xxx');
-
-    // Attempt to save bank to the DB
     try {
+        // Check if bank already exists with the same jwksUrl
+        const existingBank = BankModel.findExisting(jwksUrl);
+        if (existingBank) {
+            res.statusCode = 400;
+            return res.json({ error: "A bank with this JWKS URL already exists" });
+        }
+
+        // Generate api key for the bank
+        let apiKey = randomString('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx');
+        let bankPrefix = randomString('xxx');
+
         // Create bank in DB
         const bank = BankModel.create({
             name, transactionUrl, apiKey, bankPrefix, owners, jwksUrl

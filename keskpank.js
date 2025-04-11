@@ -13,6 +13,30 @@ dotenv.config();
 // Initialize SQLite database
 initDb();
 
+// Function to remove duplicate banks keeping only the latest entry
+const removeDuplicateBanks = () => {
+    console.log("Checking for duplicate banks...");
+    
+    // Find duplicate jwksUrls and keep only the latest one
+    const sql = `
+        DELETE FROM banks
+        WHERE id NOT IN (
+            SELECT MAX(id) 
+            FROM banks 
+            GROUP BY jwksUrl
+        )
+    `;
+    
+    const stmt = db.prepare(sql);
+    const result = stmt.run();
+    
+    if (result.changes > 0) {
+        console.log(`Removed ${result.changes} duplicate bank(s)`);
+    } else {
+        console.log("No duplicate banks found");
+    }
+};
+
 // Initialize Express
 const app = express();
 
@@ -57,6 +81,9 @@ const checkBanksConnectivity = async () => {
 const server = app.listen(process.env.PORT || 3000, () => {
     const port = server.address().port;
     console.log(`Server running at http://localhost:${port}`);
+    
+    // Check for duplicate banks on startup
+    removeDuplicateBanks();
 });
 
 // Schedule the bank connectivity check to run every minute

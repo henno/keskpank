@@ -4,6 +4,15 @@ const { validateUrl, validateBankPrefix } = require('./validators');
 // Bank model operations
 const BankModel = {
     /**
+     * Check if bank already exists with the same jwksUrl
+     * @param {string} jwksUrl Bank JWKS URL
+     * @returns {Object|null} Existing bank or null if not found
+     */
+    findExisting: (jwksUrl) => {
+        const stmt = db.prepare("SELECT * FROM banks WHERE jwksUrl = ?");
+        return stmt.get(jwksUrl);
+    },
+    /**
      * Create a new bank
      * @param {Object} bankData Bank data with name, transactionUrl, apiKey, bankPrefix, owners, jwksUrl
      * @returns {Object} Created bank
